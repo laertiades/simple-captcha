@@ -42,17 +42,12 @@ module SimpleCaptcha #:nodoc
     # Find more detailed examples with sample images here on my blog http://EXPRESSICA.com
     #
     # All Feedbacks/CommentS/Issues/Queries are welcome.
+ 
     def show_simple_captcha(options={})
       key = simple_captcha_key(options[:object])
       options[:field_value] = set_simple_captcha_data(key, options)
 
-      defaults = {
-         :image => simple_captcha_image(key, options),
-         :label => options[:label] || I18n.t('simple_captcha.label'),
-         :field => simple_captcha_field(options)
-         }
-
-      render :partial => 'simple_captcha/simple_captcha', :locals => { :simple_captcha_options => defaults }
+      return simple_captcha_image(key, options)
     end
 
     def generate_simple_captcha_image(options={})
@@ -72,9 +67,9 @@ module SimpleCaptcha #:nodoc
         if options[:object]
           hidden_captcha_key = hidden_field(options[:object], :captcha_key, :value => options[:field_value])
         else
-          hidden_captcha_key = hidden_field_tag(:captcha_key, options[:field_value])
+          hidden_captcha_key = view_context.hidden_field_tag(:captcha_key, options[:field_value])
         end
-        tag('img', :src => url, :alt => 'captcha') + hidden_captcha_key
+        view_context.tag('img', :src => url, :alt => 'captcha') + hidden_captcha_key
       end
 
       def simple_captcha_field(options={})
